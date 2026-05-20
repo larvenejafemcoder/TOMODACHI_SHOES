@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>製品カタログ — Urban Velocity</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/catalog.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-back">← HOME</a>
+    <div class="nav-title">
+      製品カタログ
+      <span class="nav-sub">PRODUCT GRID</span>
+    </div>
+    <div class="nav-count" id="productCount">0 ITEMS</div>
+  </nav>
+
+  <section class="catalog">
+    <div class="catalog-header">
+      <h1 class="catalog-title">URBAN PERFORMANCE <span class="crimson">GRID</span></h1>
+      <p class="catalog-sub">— TOKYO AERO DIVISION — 完全なコレクション</p>
+    </div>
+
+    <div class="catalog-controls">
+      <div class="search-wrap">
+        <input type="text" id="search" placeholder="Search models... / モデルを検索" />
+        <span class="search-icon">⌕</span>
+      </div>
+      <div class="filters" id="filterBar">
+        <button class="filter-btn active" data-filter="all">ALL <span class="jp-label">全</span></button>
+        <button class="filter-btn" data-filter="speed">SPEED <span class="jp-label">速度</span></button>
+        <button class="filter-btn" data-filter="tech">TECH <span class="jp-label">技術</span></button>
+        <button class="filter-btn" data-filter="limited">LIMITED <span class="jp-label">限定</span></button>
+      </div>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+
+    <div class="catalog-footer" id="catalogFooter">
+      <span>LOADING...</span>
+    </div>
+  </section>
+
+  <script src="js/catalog.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>技術展示 — Urban Velocity</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/product.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="catalog.html" class="nav-back">← CATALOG</a>
+    <div class="nav-title">
+      技術展示
+      <span class="nav-sub">TECHNOLOGY SHOWROOM</span>
+    </div>
+    <div class="nav-id" id="productIdDisplay">URBAN RUN 0001</div>
+  </nav>
+
+  <canvas id="productScene"></canvas>
+
+  <div class="grain"></div>
+
+  <section class="product-ui" id="productUI">
+    <div class="product-badge">— 最新モデル / LATEST MODEL</div>
+    <h1 class="product-name" id="productName">URBAN RUN <span class="crimson">001</span></h1>
+    <p class="product-tagline">ENGINEERED FOR MOTION — 都市のためのエンジニアリング</p>
+
+    <div class="stats" id="statsGrid">
+      <div class="stat-item">
+        <span class="stat-value">180g</span>
+        <span class="stat-label">WEIGHT / 重量</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">92%</span>
+        <span class="stat-label">ENERGY RETURN / 反発</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">TOKYO</span>
+        <span class="stat-label">DIVISION / 事業部</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">$200.20</span>
+        <span class="stat-label">PRICE / 価格</span>
+      </div>
+    </div>
+
+    <div class="product-actions">
+      <button class="btn-primary" id="buyBtn">
+        BUY SYSTEM
+        <img src="assets/icons/arrow-right.svg" alt="">
+      </button>
+      <a href="catalog.html" class="btn-secondary">
+        BACK TO GRID
+      </a>
+    </div>
+  </section>
+
+  <div class="jp-overlay-bg" id="jpBg">加速</div>
+
+  <script type="module" src="js/product.js"></script>
+</body>
+</html>

@@ -1,0 +1,949 @@
+/* ==============================
+   URBAN VELOCITY — 都市速度
+   ============================== */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: white;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.crimson {
+  color: #e60012;
+}
+
+.glow {
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+}
+
+:root {
+  --black: #0a0a0a;
+  --graphite: #1a1a1a;
+  --charcoal: #2a2a2a;
+  --white: #ffffff;
+  --crimson: #e60012;
+  --cyan: #00f0ff;
+  --gray-300: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --chrome-1: #e8e8e8;
+  --chrome-2: #888888;
+  --chrome-3: #444444;
+
+  --font-en: 'Bebas Neue', 'Eurostile', sans-serif;
+  --font-jp: 'Zen Kaku Gothic New', sans-serif;
+  --font-jp-display: 'Dela Gothic One', serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--black);
+  color: var(--white);
+}
+
+body {
+  font-family: var(--font-jp);
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* --- Scanline Overlay --- */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+}
+
+/* --- Subtle Grain --- */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* --- Japanese text overflow utility --- */
+.jp-overflow {
+  position: absolute;
+  font-family: var(--font-jp-display);
+  font-weight: 400;
+  line-height: 0.9;
+  color: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+
+.jp-overflow.crimson {
+  color: rgba(230, 0, 18, 0.06);
+}
+
+.jp-overflow.cyan {
+  color: rgba(0, 240, 255, 0.05);
+}
+
+/* --- Section wrappers --- */
+.section {
+  position: relative;
+  overflow: hidden;
+}
+
+.section-dark {
+  background: var(--black);
+}
+
+.section-graphite {
+  background: var(--graphite);
+}
+
+/* --- Three.js Canvas --- */
+#three-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* --- HERO / IMMERSION --- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-content-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 8rem;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-subtitle-jp {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  color: var(--cyan);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.hero-title-en {
+  font-family: var(--font-en);
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.hero-title-en .crimson {
+  color: var(--crimson);
+}
+
+.hero-title-en .cyan {
+  color: var(--cyan);
+}
+
+.hero-tagline {
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  letter-spacing: 0.15em;
+  margin-top: 0.5rem;
+}
+
+/* --- Japanese Overflow Background Text --- */
+.hero-jp-bg {
+  position: absolute;
+  top: 10%;
+  right: -10%;
+  font-family: var(--font-jp-display);
+  font-size: clamp(20rem, 40vw, 50rem);
+  color: rgba(255, 255, 255, 0.015);
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  transform: rotate(-5deg);
+}
+
+.hero-jp-bg-2 {
+  position: absolute;
+  bottom: -5%;
+  left: -15%;
+  font-family: var(--font-jp-display);
+  font-size: clamp(15rem, 30vw, 40rem);
+  color: rgba(230, 0, 18, 0.03);
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* --- Horizontal scrolling text (subway) --- */
+.scroll-text {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  position: relative;
+}
+
+.scroll-text-track {
+  display: inline-flex;
+  gap: 4rem;
+  animation: scrollText 30s linear infinite;
+}
+
+.scroll-text-track.reverse {
+  animation-direction: reverse;
+  animation-duration: 40s;
+}
+
+@keyframes scrollText {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.scroll-text-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rem;
+  font-family: var(--font-en);
+  font-size: clamp(6rem, 12vw, 10rem);
+  color: rgba(255, 255, 255, 0.03);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.scroll-text-item .jp {
+  font-family: var(--font-jp-display);
+  font-size: 0.4em;
+  color: rgba(0, 240, 255, 0.05);
+}
+
+/* --- Subway Transition Section --- */
+.subway-section {
+  position: relative;
+  padding: 6rem 2rem;
+  background: var(--graphite);
+  overflow: hidden;
+}
+
+.subway-labels {
+  display: flex;
+  gap: 3rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.subway-station {
+  position: relative;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--crimson);
+}
+
+.subway-station .jp-label {
+  font-family: var(--font-jp);
+  font-size: 0.75rem;
+  color: var(--crimson);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.subway-station .en-label {
+  font-family: var(--font-en);
+  font-size: 1.5rem;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.subway-station .en-label a {
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.subway-station .en-label a:hover {
+  color: var(--cyan);
+}
+
+/* Motion streaks */
+.motion-streak {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  animation: streakMove 3s linear infinite;
+}
+
+@keyframes streakMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100vw); }
+}
+
+/* --- Product Sequence Section --- */
+.product-section {
+  position: relative;
+  min-height: 200vh;
+  padding: 4rem 2rem;
+  background: var(--black);
+  overflow: hidden;
+}
+
+.product-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.product-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+  min-height: 400px;
+}
+
+.product-visual .shoe-3d {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  transition: transform 0.05s linear;
+  transform-style: preserve-3d;
+}
+
+.product-visual .shoe-3d img {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  transition: opacity 0.5s ease;
+}
+
+.product-visual .shoe-3d img.hidden {
+  opacity: 0;
+}
+
+.product-info {
+  position: relative;
+  z-index: 2;
+}
+
+.product-info h2 {
+  font-family: var(--font-en);
+  font-size: clamp(3rem, 5vw, 5rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.product-info .jp-spec {
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  letter-spacing: 0.1em;
+  margin-top: 1rem;
+  line-height: 1.8;
+}
+
+.product-price {
+  font-family: var(--font-en);
+  font-size: 2.5rem;
+  color: var(--crimson);
+  margin-top: 2rem;
+}
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.spec-item {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.75rem;
+}
+
+.spec-item .label {
+  font-family: var(--font-jp);
+  font-size: 0.65rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.spec-item .value {
+  font-family: var(--font-en);
+  font-size: 1.25rem;
+  color: var(--white);
+  margin-top: 0.25rem;
+}
+
+/* Scroll progress indicator */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--crimson), var(--cyan));
+  z-index: 10000;
+  transition: width 0.05s linear;
+}
+
+/* ---- Japanese overflow on product section --- */
+.product-jp-overlay {
+  position: absolute;
+  top: 50%;
+  right: -5%;
+  transform: translateY(-50%);
+  font-family: var(--font-jp-display);
+  font-size: clamp(12rem, 20vw, 25rem);
+  color: rgba(255, 255, 255, 0.015);
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+/* --- Technology / Services Section --- */
+.tech-section {
+  position: relative;
+  padding: 6rem 2rem;
+  background: var(--graphite);
+  overflow: hidden;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.tech-card {
+  position: relative;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.01);
+  transition: border-color 0.4s, background 0.4s;
+  overflow: hidden;
+}
+
+.tech-card:hover {
+  border-color: rgba(0, 240, 255, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tech-card-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(230, 0, 18, 0.1);
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+}
+
+.tech-card-icon img {
+  width: 1.25rem;
+  height: 1.25rem;
+  filter: brightness(0) saturate(100%) invert(16%) sepia(93%) saturate(5145%) hue-rotate(358deg) brightness(94%) contrast(116%);
+}
+
+.tech-card h3 {
+  font-family: var(--font-en);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+
+.tech-card p {
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  margin-top: 0.75rem;
+  line-height: 1.7;
+}
+
+.tech-card .jp-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-family: var(--font-jp);
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.06);
+  letter-spacing: 0.1em;
+}
+
+/* --- Customer Reviews --- */
+.reviews-section {
+  position: relative;
+  padding: 6rem 2rem;
+  background: var(--black);
+  overflow: hidden;
+}
+
+.reviews-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.reviews-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.reviews-header h2 {
+  font-family: var(--font-en);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.reviews-header .jp-sub {
+  font-family: var(--font-jp);
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  letter-spacing: 0.2em;
+  margin-top: 0.5rem;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.review-card {
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.01);
+  position: relative;
+}
+
+.review-card .avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.review-card .name {
+  font-family: var(--font-en);
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  margin-top: 1rem;
+}
+
+.review-card .rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.review-card .rating img {
+  width: 1rem;
+  height: 1rem;
+  filter: brightness(0) saturate(100%) invert(16%) sepia(93%) saturate(5145%) hue-rotate(358deg) brightness(94%) contrast(116%);
+}
+
+.review-card .rating span {
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+.review-card .feedback {
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  color: var(--gray-300);
+  line-height: 1.8;
+  margin-top: 1rem;
+}
+
+.review-card .jp-quote {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 1rem;
+  font-family: var(--font-jp-display);
+  font-size: 4rem;
+  color: rgba(255, 255, 255, 0.02);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* --- Subscribe Section --- */
+.subscribe-section {
+  position: relative;
+  padding: 6rem 2rem;
+  background: var(--graphite);
+  overflow: hidden;
+}
+
+.subscribe-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4rem;
+}
+
+.subscribe-inner h3 {
+  font-family: var(--font-en);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.subscribe-inner h3 .crimson {
+  color: var(--crimson);
+}
+
+.subscribe-form {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 450px;
+}
+
+.subscribe-form input {
+  flex: 1;
+  padding: 0.9rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.subscribe-form input:focus {
+  border-color: var(--cyan);
+}
+
+.subscribe-form input::placeholder {
+  color: var(--gray-700);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: var(--crimson);
+  color: var(--white);
+  border: none;
+  font-family: var(--font-en);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+  background: #cc0010;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-primary img {
+  width: 1rem;
+  height: 1rem;
+  filter: brightness(0) invert(1);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-en);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* --- Footer / Metro Map --- */
+.footer-section {
+  position: relative;
+  padding: 5rem 2rem 3rem;
+  background: var(--black);
+  overflow: hidden;
+}
+
+.footer-grid {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+}
+
+.footer-brand p {
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  margin-top: 1rem;
+  line-height: 1.8;
+  max-width: 300px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.footer-social a:hover {
+  border-color: var(--cyan);
+  background: rgba(0, 240, 255, 0.04);
+}
+
+.footer-social a img {
+  width: 1rem;
+  height: 1rem;
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.footer-social a:hover img {
+  opacity: 1;
+}
+
+.footer-col h4 {
+  font-family: var(--font-en);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-col ul li a {
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-col ul li a:hover {
+  color: var(--cyan);
+}
+
+.footer-col .jp-label {
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.04);
+  margin-left: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+/* Metro line */
+.metro-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 0, 18, 0.15), rgba(0, 240, 255, 0.1), transparent);
+}
+
+.footer-bottom {
+  max-width: 1440px;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-jp);
+  font-size: 0.7rem;
+  color: var(--gray-700);
+}
+
+.footer-bottom .copyright {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-bottom .copyright img {
+  width: 0.9rem;
+  height: 0.9rem;
+  opacity: 0.3;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .hero-content-left {
+    align-items: center;
+    text-align: center;
+    padding-top: 8rem;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .product-info {
+    text-align: center;
+  }
+
+  .spec-grid {
+    grid-template-columns: 1fr 1fr;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tech-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subscribe-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-title-en {
+    font-size: clamp(3rem, 15vw, 4rem);
+  }
+
+  .tech-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subscribe-form {
+    flex-direction: column;
+  }
+
+  .subway-labels {
+    gap: 1.5rem;
+  }
+
+  .spec-grid {
+    grid-template-columns: 1fr;
+  }
+}
