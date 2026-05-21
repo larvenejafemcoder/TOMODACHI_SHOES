@@ -1,4 +1,4 @@
-import { c as connectDB, S as Shoe } from './Shoe_D_cAQ5Jf.mjs';
+import { c as connectDB, S as Shoe } from './Shoe_DTpxLiNh.mjs';
 import { C as Collection } from './Collection_CNv99q0L.mjs';
 import { b as batchGenerateMarketData } from './market-sim_CDFBtqHE.mjs';
 import { c as createSearchIndex, i as indexShoes } from './meilisearch_DRNFvghT.mjs';

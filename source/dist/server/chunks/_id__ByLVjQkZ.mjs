@@ -1,4 +1,4 @@
-import { c as connectDB, S as Shoe } from './Shoe_D_cAQ5Jf.mjs';
+import { c as connectDB, S as Shoe } from './Shoe_DTpxLiNh.mjs';
 import { ObjectId } from 'mongoose';
 
 const GET = async ({ params }) => {

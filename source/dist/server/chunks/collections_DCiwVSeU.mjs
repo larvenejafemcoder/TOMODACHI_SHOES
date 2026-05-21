@@ -1,4 +1,4 @@
-import { c as connectDB } from './Shoe_D_cAQ5Jf.mjs';
+import { c as connectDB } from './Shoe_DTpxLiNh.mjs';
 import { C as Collection } from './Collection_CNv99q0L.mjs';
 
 const GET = async ({ url }) => {

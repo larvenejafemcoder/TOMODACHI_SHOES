@@ -28,6 +28,11 @@ async function connectDB() {
   }
 }
 
+const db = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  connectDB
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const ImageAssetSchema = new Schema({
   url: { type: String, required: true },
   secureUrl: { type: String },
@@ -130,4 +135,9 @@ ShoeSchema.index({
 });
 const Shoe = mongoose.model("Shoe", ShoeSchema);
 
-export { Shoe as S, connectDB as c };
+const Shoe$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  Shoe
+}, Symbol.toStringTag, { value: 'Module' }));
+
+export { Shoe as S, Shoe$1 as a, connectDB as c, db as d };
