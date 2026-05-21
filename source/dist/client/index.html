@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOMODACHI SHOES — 機密保管庫</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js Import Map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tomodachi: {
+              black: '#0A0A0A',
+              surface: '#1A1A1A',
+              chrome: '#2A2A2A',
+              silver: '#888888',
+              matte: '#F5F5F5',
+              purple: '#A855F7',
+              crimson: '#DC2626',
+              accent: '#FF2D55',
+              muted: '#71717A',
+              glass: 'rgba(255,255,255,0.04)',
+            }
+          },
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+            jp: ['Noto Sans JP', 'sans-serif'],
+            en: ['Inter', 'sans-serif'],
+          }
+        }
+      },
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====== LOADING SCREEN ====== -->
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-brand">
+        <span class="loader-dot">●</span>
+        <h1 class="loader-title">TOMODACHI SHOES</h1>
+      </div>
+      <div class="loader-sub">機密保管庫 — CLASSIFIED ARCHIVE</div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loaderBar"></div>
+      </div>
+      <div class="loader-pct" id="loaderPct">0%</div>
+    </div>
+  </div>
+
+  <!-- ====== TERMINAL OVERLAY ====== -->
+  <div id="terminal" class="terminal-overlay hidden">
+    <div class="terminal-header">
+      <span>TOMODACHI TERMINAL v2.4.1</span>
+      <button id="terminalClose" class="terminal-close">✕</button>
+    </div>
+    <div class="terminal-body" id="terminalBody">
+      <div class="terminal-line"><span class="terminal-prompt">></span> access archive</div>
+      <div class="terminal-line dim">Initializing classified inventory...</div>
+      <div class="terminal-line dim">Decrypting product database...</div>
+      <div class="terminal-line" style="color: #A855F7;">Access granted. Welcome, operative.</div>
+      <div class="terminal-line mt-4">
+        <span class="terminal-prompt">></span>
+        <span class="terminal-cursor" id="terminalCursor">_</span>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="three-canvas"></canvas>
+  <div class="grain"></div>
+  <div class="scanlines"></div>
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ====== NAV ====== -->
+  <nav class="ts-nav" id="mainNav">
+    <div class="ts-nav-inner">
+      <a href="#" class="ts-logo">
+        <span class="text-[#A855F7]">●</span>
+        <span class="ts-logo-text">TOMODACHI</span>
+        <span class="ts-logo-sub">SHOES</span>
+      </a>
+
+      <!-- Region Selector -->
+      <div class="ts-region-selector" id="regionSelector">
+        <button class="ts-region-btn active" data-region="tokyo">東京</button>
+        <button class="ts-region-btn" data-region="osaka">大阪</button>
+        <button class="ts-region-btn" data-region="seoul">서울</button>
+        <button class="ts-region-btn" data-region="shanghai">上海</button>
+      </div>
+
+      <div class="ts-nav-links" id="desktopNav">
+        <a href="#archive" class="ts-nav-link" data-section="archive">
+          <span class="ts-nav-num">01</span> ARCHIVE
+        </a>
+        <a href="#dossier" class="ts-nav-link" data-section="dossier">
+          <span class="ts-nav-num">02</span> DOSSIER
+        </a>
+        <a href="#tech" class="ts-nav-link" data-section="tech">
+          <span class="ts-nav-num">03</span> TECH
+        </a>
+        <a href="catalog.html" class="ts-nav-link">
+          <span class="ts-nav-num">04</span> CATALOG
+        </a>
+        <a href="product.html" class="ts-nav-link">
+          <span class="ts-nav-num">05</span> SHOWROOM
+        </a>
+      </div>
+
+      <button class="ts-mobile-toggle" id="mobileNavToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile panel -->
+    <div id="mobileNavPanel" class="ts-mobile-panel hidden">
+      <a href="#archive" class="ts-mobile-link">ARCHIVE</a>
+      <a href="#dossier" class="ts-mobile-link">DOSSIER</a>
+      <a href="#tech" class="ts-mobile-link">TECH</a>
+      <a href="catalog.html" class="ts-mobile-link">CATALOG</a>
+      <a href="product.html" class="ts-mobile-link">SHOWROOM</a>
+    </div>
+  </nav>
+
+  <!-- ====== SECTION 1: ARCHIVE — HERO ====== -->
+  <section id="archive" class="ts-hero section">
+    <div class="ts-hero-jp-bg" id="heroJpBg">機密</div>
+
+    <div class="ts-hero-content">
+      <div class="ts-hero-badge" data-lag="0.1">— 機密保管庫 / CLASSIFIED ARCHIVE —</div>
+      <h1 class="ts-hero-title" data-lag="0.2">
+        <span class="ts-hero-line">SPEED IS</span>
+        <span class="ts-hero-line ts-hero-line-accent">RELIGION</span>
+      </h1>
+      <p class="ts-hero-jp" data-lag="0.3">「速度は宗教だ」</p>
+      <div class="ts-hero-actions" data-lag="0.4">
+        <a href="catalog.html" class="ts-btn ts-btn-primary">
+          ENTER ARCHIVE
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="product.html" class="ts-btn ts-btn-ghost">
+          ACCESS SHOWROOM
+        </a>
+        <button id="terminalTrigger" class="ts-btn ts-btn-ghost ts-btn-small">
+          ACCESS TERMINAL
+        </button>
+      </div>
+
+      <div class="ts-hero-stats" data-lag="0.5">
+        <div class="ts-stat">
+          <span class="ts-stat-val">1,247</span>
+          <span class="ts-stat-lbl">ARCHIVED MODELS</span>
+        </div>
+        <div class="ts-stat">
+          <span class="ts-stat-val">¥--</span>
+          <span class="ts-stat-lbl">MARKET VALUE</span>
+        </div>
+        <div class="ts-stat">
+          <span class="ts-stat-val">JP-03</span>
+          <span class="ts-stat-lbl">CURRENT REGION</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION 2: SUBWAY TRANSITION ====== -->
+  <section class="ts-subway section" id="subway">
+    <div class="ts-scroll-text mb-12">
+      <div class="ts-scroll-track" id="scrollTrack1">
+        <span>TOKYO <span class="ts-jp-sm">東京</span></span>
+        <span>OSAKA <span class="ts-jp-sm">大阪</span></span>
+        <span>SEOUL <span class="ts-jp-sm">서울</span></span>
+        <span>SHANGHAI <span class="ts-jp-sm">上海</span></span>
+        <span>TOKYO <span class="ts-jp-sm">東京</span></span>
+        <span>OSAKA <span class="ts-jp-sm">大阪</span></span>
+        <span>SEOUL <span class="ts-jp-sm">서울</span></span>
+        <span>SHANGHAI <span class="ts-jp-sm">上海</span></span>
+      </div>
+    </div>
+
+    <div class="ts-subway-content">
+      <div class="ts-subway-badge">— NEXT STATION</div>
+      <h2 class="ts-subway-title">
+        THE CITY<br>
+        <span class="text-[#A855F7]">IS THE RUNWAY</span>
+      </h2>
+      <p class="ts-subway-desc">
+        From the neon corridors of Shibuya to the precision tracks of the Tokaido Shinkansen — every step is a statement. Move through the city. Own the night.
+      </p>
+
+      <div class="ts-stations">
+        <div class="ts-station">
+          <div class="ts-station-jp">01 // 原宿</div>
+          <div class="ts-station-en">HARAJUKU</div>
+        </div>
+        <div class="ts-station">
+          <div class="ts-station-jp">02 // 渋谷</div>
+          <div class="ts-station-en">SHIBUYA</div>
+        </div>
+        <div class="ts-station">
+          <div class="ts-station-jp">03 // 新宿</div>
+          <div class="ts-station-en">SHINJUKU</div>
+        </div>
+        <div class="ts-station">
+          <div class="ts-station-jp">04 // 銀座</div>
+          <div class="ts-station-en">GINZA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ts-streak" style="top: 20%; width: 30%; animation-delay: 0s;"></div>
+    <div class="ts-streak" style="top: 40%; width: 20%; animation-delay: 1s;"></div>
+    <div class="ts-streak" style="top: 60%; width: 25%; animation-delay: 0.5s;"></div>
+    <div class="ts-streak" style="top: 80%; width: 35%; animation-delay: 1.5s;"></div>
+  </section>
+
+  <!-- ====== SECTION 3: PRODUCT DOSSIER ====== -->
+  <section id="dossier" class="ts-dossier section">
+    <div class="ts-dossier-jp" id="dossierJp">加速</div>
+
+    <div class="ts-dossier-sticky">
+      <div class="ts-dossier-grid">
+        <div class="ts-dossier-visual" id="dossierVisual">
+          <div class="ts-dossier-shoe" id="dossierShoe">
+            <img src="assets/images/shoe4.svg" alt="Shoe" class="ts-shoe-img active" data-index="0">
+            <img src="assets/images/shoe5.svg" alt="Shoe" class="ts-shoe-img" data-index="1">
+            <img src="assets/images/shoe6.svg" alt="Shoe" class="ts-shoe-img" data-index="2">
+            <img src="assets/images/shoe7.svg" alt="Shoe" class="ts-shoe-img" data-index="3">
+            <img src="assets/images/shoe8.svg" alt="Shoe" class="ts-shoe-img" data-index="4">
+          </div>
+        </div>
+
+        <div class="ts-dossier-info">
+          <div class="ts-dossier-badge">— 最新モデル / LATEST MODEL —</div>
+          <h2 class="ts-dossier-name">
+            TOMODACHI<br>
+            <span style="color: #A855F7;">UNIT-01</span>
+          </h2>
+          <div class="ts-dossier-price" id="dossierPrice">¥48,500</div>
+
+          <div class="ts-dossier-specs">
+            <div class="ts-spec">
+              <span class="ts-spec-label">STATUS</span>
+              <span class="ts-spec-val" style="color: #22C55E;">ACTIVE</span>
+            </div>
+            <div class="ts-spec">
+              <span class="ts-spec-label">REGION</span>
+              <span class="ts-spec-val">JP-TOKYO</span>
+            </div>
+            <div class="ts-spec">
+              <span class="ts-spec-label">CLASS</span>
+              <span class="ts-spec-val">A+</span>
+            </div>
+            <div class="ts-spec">
+              <span class="ts-spec-label">RARITY</span>
+              <span class="ts-spec-val" style="color: #A855F7;">LIMITED</span>
+            </div>
+          </div>
+
+          <div class="ts-dossier-desc">
+            最先端のエンジニアリングと日本の精密技術の融合。すべてのディテールに意味がある。
+            <em>— Where cutting-edge engineering meets Japanese precision. Every detail has meaning.</em>
+          </div>
+
+          <a href="product.html" class="ts-btn ts-btn-primary">
+            VIEW DOSSIER
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 100vh;"></div>
+  </section>
+
+  <!-- ====== SECTION 4: TECHNOLOGY / SERVICES ====== -->
+  <section id="tech" class="ts-tech section">
+    <div class="ts-tech-jp">技術</div>
+
+    <div class="ts-tech-content">
+      <div class="ts-tech-badge">— ENGINEERED IN JAPAN —</div>
+      <h2 class="ts-tech-title">
+        PRECISION<br>
+        <span class="text-[#A855F7]">TECHNOLOGY</span>
+      </h2>
+
+      <div class="ts-tech-grid">
+        <div class="ts-tech-card">
+          <div class="ts-tech-icon">
+            <img src="assets/icons/truck-fast.svg" alt="">
+          </div>
+          <span class="ts-tech-jp-badge">運送</span>
+          <h3>FREE SHIPPING</h3>
+          <p>Seamless delivery across all regions. 全国送料無料。</p>
+        </div>
+        <div class="ts-tech-card">
+          <div class="ts-tech-icon">
+            <img src="assets/icons/shield-tick.svg" alt="">
+          </div>
+          <span class="ts-tech-jp-badge">安全</span>
+          <h3>SECURE PAYMENT</h3>
+          <p>Encrypted transactions. 安全な支払い。</p>
+        </div>
+        <div class="ts-tech-card">
+          <div class="ts-tech-icon">
+            <img src="assets/icons/support.svg" alt="">
+          </div>
+          <span class="ts-tech-jp-badge">支援</span>
+          <h3>24/7 SUPPORT</h3>
+          <p>Always here. いつでもサポート。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION 5: REVIEWS ====== -->
+  <section id="reviews" class="ts-reviews section">
+    <div class="ts-reviews-jp">評判</div>
+
+    <div class="ts-reviews-container">
+      <div class="ts-reviews-header">
+        <div class="ts-reviews-badge">— VOICE OF THE CITY —</div>
+        <h2>AGENT <span class="text-[#A855F7]">FEEDBACK</span></h2>
+        <div class="ts-reviews-sub">実際の声 — 都市が語る</div>
+      </div>
+
+      <div class="ts-reviews-grid">
+        <div class="ts-review-card">
+          <div class="ts-review-avatar" style="background: linear-gradient(135deg, #A855F7, #DC2626);"></div>
+          <div class="ts-review-name">AGENT 47</div>
+          <div class="ts-review-rating">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <span>(4.5)</span>
+          </div>
+          <p class="ts-review-text">The precision engineering exceeds all specs. A true cyber-fashion artifact.</p>
+          <div class="ts-review-quote">”</div>
+        </div>
+        <div class="ts-review-card">
+          <div class="ts-review-avatar" style="background: linear-gradient(135deg, #DC2626, #A855F7);"></div>
+          <div class="ts-review-name">AGENT 03</div>
+          <div class="ts-review-rating">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>
+            <span>(4.5)</span>
+          </div>
+          <p class="ts-review-text">Incredible quality. The archive interface alone is worth the access code.</p>
+          <div class="ts-review-quote">”</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION 6: SUBSCRIBE ====== -->
+  <section class="ts-subscribe section">
+    <div class="ts-subscribe-jp">未来</div>
+
+    <div class="ts-subscribe-inner">
+      <h3>
+        SIGNAL RECEPTION<br>
+        <span class="text-[#A855F7]">ENABLED</span>
+      </h3>
+      <div class="ts-subscribe-form-wrap">
+        <div class="ts-subscribe-form">
+          <input type="text" placeholder="your@terminal.com" id="subscribeInput" class="ts-input">
+          <button class="ts-btn ts-btn-primary" id="subscribeBtn">CONNECT</button>
+        </div>
+        <p class="ts-subscribe-note">最新情報をお届けします — 配信はいつでも停止できます</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="ts-footer section">
+    <div class="ts-footer-line"></div>
+
+    <div class="ts-footer-grid">
+      <div class="ts-footer-brand">
+        <a href="#" class="ts-footer-logo">
+          <span class="text-[#A855F7]">●</span> TOMODACHI
+        </a>
+        <p>Premium sneaker archive. Tokyo-engineered. 東京製。</p>
+        <div class="ts-footer-social">
+          <a href="#"><img src="assets/icons/facebook.svg" alt="facebook"></a>
+          <a href="#"><img src="assets/icons/twitter.svg" alt="twitter"></a>
+          <a href="#"><img src="assets/icons/instagram.svg" alt="instagram"></a>
+        </div>
+      </div>
+
+      <div class="ts-footer-col">
+        <h4>ARCHIVE <span class="ts-footer-jp">保管庫</span></h4>
+        <ul>
+          <li><a href="#">Air Unit 01</a></li>
+          <li><a href="#">Air Unit 07</a></li>
+          <li><a href="#">Shibuya Night</a></li>
+          <li><a href="#">Neo Tokyo</a></li>
+          <li><a href="#">Osaka Run</a></li>
+          <li><a href="#">Akihabara Tech</a></li>
+        </ul>
+      </div>
+
+      <div class="ts-footer-col">
+        <h4>NETWORK <span class="ts-footer-jp">通信</span></h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Protocol</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Payment</a></li>
+        </ul>
+      </div>
+
+      <div class="ts-footer-col">
+        <h4>SIGNAL <span class="ts-footer-jp">連絡</span></h4>
+        <ul>
+          <li><a href="mailto:archive@tomodachi.jp">archive@tomodachi.jp</a></li>
+          <li><a href="tel:+819012345678">+81 90-1234-5678</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ts-footer-bottom">
+      <div class="ts-footer-copy">
+        <img src="assets/icons/copyright-sign.svg" alt="">
+        <span>TOMODACHI ARCHIVE. All rights reserved.</span>
+      </div>
+      <span>Terms & Conditions</span>
+    </div>
+  </footer>
+
+  <!-- ====== TIME INDICATOR ====== -->
+  <div class="ts-time" id="tsTime">TOKYO · 00:00</div>
+
+  <script src="js/script.js"></script>
+  <script type="module">
+    import { updateScrollState, updateMouseState } from './js/three-scene.js';
+
+    function syncThree() {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollY / docHeight : 0;
+      updateScrollState(scrollY, progress);
+      requestAnimationFrame(syncThree);
+    }
+    syncThree();
+
+    window.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5);
+      const y = (e.clientY / window.innerHeight - 0.5);
+      updateMouseState(x, y);
+    });
+  </script>
+</body>
+</html>

@@ -166,8 +166,8 @@ export const POST: APIRoute = async ({ request }) => {
         energyClass: market.energyClass,
         isActive: true,
         isFeatured: idx % 10 === 0,
-        viewCount: Math.floor(Math.random() * 5000),
-        favoriteCount: Math.floor(Math.random() * 500),
+        viewCount: Math.floor((idx * 7919 + 1) % 5000),
+        favoriteCount: Math.floor((idx * 6271 + 1) % 500),
       };
 
       shoeDocs.push(doc);
@@ -240,10 +240,10 @@ export const POST: APIRoute = async ({ request }) => {
       message: `Seeded ${insertedCount} shoes across ${collections.length} collections`,
       collections: collections.map(c => ({ name: c.name, slug: c.slug })),
       total: await Shoe.countDocuments({ isActive: true }),
-      priceRange: {
-        min: `¥${890_000.toLocaleString()}`,
-        max: `¥${4_000_000.toLocaleString()}`,
-      },
+        priceRange: {
+          min: `¥${(890000).toLocaleString()}`,
+          max: `¥${(4000000).toLocaleString()}`,
+        },
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
