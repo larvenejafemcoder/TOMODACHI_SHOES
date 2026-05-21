@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOSSIER ARCHIVE — TOMODACHI SHOES</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tomodachi: {
+              black: '#0A0A0A', surface: '#1A1A1A', chrome: '#2A2A2A',
+              silver: '#888888', matte: '#F5F5F5', purple: '#A855F7',
+              crimson: '#DC2626', accent: '#FF2D55', muted: '#71717A',
+              glass: 'rgba(255,255,255,0.04)',
+            }
+          },
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+            jp: ['Noto Sans JP', 'sans-serif'],
+            en: ['Inter', 'sans-serif'],
+          }
+        }
+      },
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/catalog.css">
+</head>
+<body>
+
+  <div class="grain"></div>
+  <div class="scanlines"></div>
+
+  <nav class="ts-catalog-nav">
+    <a href="index.html" class="ts-nav-back">← ARCHIVE</a>
+    <div class="ts-catalog-nav-title">
+      DOSSIER ARCHIVE
+      <span class="ts-catalog-nav-sub">機密製品ファイル</span>
+    </div>
+    <div class="ts-catalog-nav-count" id="productCount">0 DOSSIERS</div>
+  </nav>
+
+  <section class="ts-catalog">
+    <div class="ts-catalog-header">
+      <h1 class="ts-catalog-title">CLASSIFIED <span style="color: #A855F7;">DOSSIERS</span></h1>
+      <p class="ts-catalog-sub">— TOMODACHI ARCHIVE DIVISION — 完全なコレクション</p>
+    </div>
+
+    <div class="ts-catalog-controls">
+      <div class="ts-search-wrap">
+        <input type="text" id="search" placeholder="Search dossiers... / 機密を検索" class="ts-input" />
+        <span class="ts-search-icon">⌕</span>
+      </div>
+      <div class="ts-filters" id="filterBar">
+        <button class="ts-filter active" data-filter="all">ALL <span class="ts-filter-jp">全</span></button>
+        <button class="ts-filter" data-filter="speed">SPEED <span class="ts-filter-jp">速度</span></button>
+        <button class="ts-filter" data-filter="tech">TECH <span class="ts-filter-jp">技術</span></button>
+        <button class="ts-filter" data-filter="limited">LIMITED <span class="ts-filter-jp">限定</span></button>
+      </div>
+    </div>
+
+    <div class="ts-dossier-grid" id="productGrid"></div>
+
+    <div class="ts-catalog-footer" id="catalogFooter">
+      <span>DECRYPTING DOSSIERS...</span>
+    </div>
+  </section>
+
+  <script src="js/catalog.js"></script>
+</body>
+</html>

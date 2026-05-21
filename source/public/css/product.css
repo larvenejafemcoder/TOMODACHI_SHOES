@@ -1,0 +1,123 @@
+/* ==============================
+   SHOWROOM / PRODUCT PAGE
+   Tomodachi Shoes — 技術展示
+   ============================== */
+
+body {
+  background: #f0f0f0;
+  color: #0A0A0A;
+  overflow: hidden; height: 100vh;
+}
+
+/* --- Three.js canvas --- */
+#productScene {
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh; z-index: 0; display: block;
+}
+
+/* --- Nav overlay --- */
+.ts-showroom-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 5vw;
+  background: linear-gradient(180deg, rgba(10,10,10,0.85) 0%, transparent 100%);
+}
+
+.ts-showroom-nav-title {
+  font-family: var(--font-display); font-size: 0.9rem;
+  font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; text-align: center;
+}
+
+.ts-showroom-nav-sub {
+  display: block; font-family: var(--font-mono);
+  font-size: 0.45rem; color: var(--ts-muted);
+  letter-spacing: 0.25em; margin-top: 0.15rem;
+}
+
+.ts-showroom-nav-id {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--ts-muted); letter-spacing: 0.1em;
+}
+
+/* --- Product UI overlay --- */
+.ts-showroom-ui {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  padding: 3rem 5vw 4rem;
+  background: linear-gradient(0deg, rgba(10,10,10,0.8) 0%, transparent 100%);
+  pointer-events: none;
+}
+.ts-showroom-ui * { pointer-events: auto; }
+
+.ts-showroom-badge {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  color: var(--ts-purple); letter-spacing: 0.25em;
+  text-transform: uppercase; margin-bottom: 0.5rem;
+}
+
+.ts-showroom-name {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 700; line-height: 0.9;
+  text-transform: uppercase; letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.ts-showroom-tagline {
+  font-family: var(--font-jp); font-size: 0.75rem;
+  color: var(--ts-muted); letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+
+/* --- Stats grid --- */
+.ts-showroom-stats {
+  display: flex; gap: 2.5rem; flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.ts-showroom-stat {
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+
+.ts-showroom-stat-val {
+  font-family: var(--font-display);
+  font-size: 1.35rem; font-weight: 600;
+  color: var(--ts-matte); letter-spacing: 0.02em;
+}
+
+.ts-showroom-stat-lbl {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  color: var(--ts-muted); text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* --- Actions --- */
+.ts-showroom-actions {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+}
+
+/* --- Japanese background overlay --- */
+.ts-showroom-jp {
+  position: fixed; top: 50%; right: -5%;
+  transform: translateY(-50%);
+  font-family: var(--font-jp); font-weight: 900;
+  font-size: clamp(12rem, 25vw, 30rem);
+  color: rgba(0,0,0,0.03);
+  line-height: 0.8; pointer-events: none; user-select: none;
+  z-index: 1;
+  writing-mode: vertical-rl; text-orientation: upright;
+  animation: jpPulse 6s ease-in-out infinite;
+}
+
+@keyframes jpPulse {
+  0%, 100% { opacity: 0.01; }
+  50% { opacity: 0.02; }
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  .ts-showroom-stats { gap: 1.5rem; }
+  .ts-showroom-stat-val { font-size: 1rem; }
+  .ts-showroom-ui { padding: 2rem 5vw 3rem; }
+  .ts-showroom-nav-id { display: none; }
+}

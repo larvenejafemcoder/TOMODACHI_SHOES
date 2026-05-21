@@ -1,0 +1,253 @@
+/* ==============================
+   CATALOG / DOSSIER ARCHIVE
+   Tomodachi Shoes — 機密保管庫
+   ============================== */
+
+body {
+  background: var(--ts-black);
+  color: var(--ts-matte);
+  font-family: var(--font-jp);
+}
+
+/* --- Nav --- */
+.ts-catalog-nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 5vw;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--ts-glass-border);
+}
+
+.ts-nav-back {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; color: var(--ts-muted);
+  transition: color 0.3s; text-transform: uppercase; text-decoration: none;
+}
+.ts-nav-back:hover { color: var(--ts-purple); }
+
+.ts-catalog-nav-title {
+  font-family: var(--font-display); font-size: 1rem;
+  font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; text-align: center;
+}
+
+.ts-catalog-nav-sub {
+  display: block; font-family: var(--font-mono);
+  font-size: 0.45rem; color: var(--ts-muted);
+  letter-spacing: 0.25em; margin-top: 0.15rem;
+}
+
+.ts-catalog-nav-count {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--ts-muted); letter-spacing: 0.1em;
+}
+
+/* --- Catalog --- */
+.ts-catalog {
+  padding: 3rem 5vw 5rem;
+  max-width: 1440px; margin: 0 auto;
+}
+
+.ts-catalog-header { margin-bottom: 2.5rem; }
+
+.ts-catalog-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700; line-height: 0.9;
+  text-transform: uppercase; letter-spacing: 0.02em;
+}
+
+.ts-catalog-sub {
+  font-family: var(--font-jp); font-size: 0.65rem;
+  color: var(--ts-muted); letter-spacing: 0.2em; margin-top: 0.5rem;
+}
+
+/* --- Controls --- */
+.ts-catalog-controls {
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 1.5rem;
+  margin-bottom: 2.5rem; flex-wrap: wrap;
+}
+
+.ts-search-wrap {
+  position: relative; flex: 1; min-width: 200px; max-width: 400px;
+}
+
+.ts-search-icon {
+  position: absolute; left: 0.85rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--ts-chrome); font-size: 1.1rem;
+}
+
+.ts-search-wrap input {
+  width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--ts-glass-border);
+  color: var(--ts-matte); font-family: var(--font-mono);
+  font-size: 0.72rem; outline: none; transition: border-color 0.3s;
+}
+.ts-search-wrap input:focus { border-color: var(--ts-purple); }
+.ts-search-wrap input::placeholder { color: var(--ts-chrome); }
+
+.ts-filters {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+}
+
+.ts-filter {
+  padding: 0.5rem 1.25rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--ts-glass-border);
+  color: var(--ts-muted);
+  font-family: var(--font-mono); font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+}
+.ts-filter:hover {
+  border-color: rgba(255,255,255,0.12);
+  color: var(--ts-matte);
+}
+.ts-filter.active {
+  border-color: var(--ts-purple); color: var(--ts-matte);
+  background: rgba(168,85,247,0.06);
+}
+
+.ts-filter-jp {
+  font-family: var(--font-jp); font-size: 0.5rem;
+  margin-left: 0.25rem; opacity: 0.5;
+}
+
+/* --- Dossier Grid --- */
+.ts-dossier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* --- Dossier Card --- */
+.ts-dossier-card {
+  position: relative;
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--ts-glass-border);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+}
+
+.ts-dossier-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(168,85,247,0.25);
+  background: rgba(168,85,247,0.02);
+  box-shadow: 0 8px 32px rgba(168,85,247,0.06);
+}
+
+.ts-dossier-card:active {
+  transform: translateY(-3px);
+}
+
+/* Dossier header strip */
+.ts-dossier-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ts-purple), transparent);
+  opacity: 0; transition: opacity 0.4s;
+}
+.ts-dossier-card:hover::before { opacity: 1; }
+
+.ts-dossier-card-img {
+  width: 100%; aspect-ratio: 1;
+  object-fit: contain; margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #111, #1a1a1a);
+  transition: transform 0.5s ease;
+  display: block;
+}
+.ts-dossier-card:hover .ts-dossier-card-img {
+  transform: scale(1.06);
+}
+
+.ts-dossier-card-badge {
+  font-family: var(--font-mono); font-size: 0.45rem;
+  letter-spacing: 0.15em; color: var(--ts-purple);
+  text-transform: uppercase; margin-bottom: 0.25rem;
+}
+
+.ts-dossier-card-name {
+  font-family: var(--font-display);
+  font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ts-matte); line-height: 1.2;
+}
+
+.ts-dossier-card-series {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  color: var(--ts-muted); margin-top: 0.2rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+.ts-dossier-card-meta {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-top: 0.75rem;
+  padding-top: 0.75rem; border-top: 1px solid var(--ts-glass-border);
+}
+
+.ts-dossier-card-price {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 600;
+  color: var(--ts-purple);
+}
+
+.ts-dossier-card-status {
+  font-family: var(--font-mono); font-size: 0.45rem;
+  letter-spacing: 0.1em; color: var(--ts-muted); text-transform: uppercase;
+}
+
+.ts-dossier-card-status.active { color: #22C55E; }
+
+/* Japanese background label */
+.ts-dossier-card::after {
+  content: '機密';
+  position: absolute; bottom: -0.2rem; right: -0.1rem;
+  font-family: var(--font-jp); font-weight: 900;
+  font-size: 3.5rem; color: rgba(255,255,255,0.008);
+  line-height: 1; pointer-events: none; user-select: none;
+}
+
+/* --- Footer / Loader --- */
+.ts-catalog-footer {
+  text-align: center; padding: 3rem 0;
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--ts-muted); letter-spacing: 0.15em; text-transform: uppercase;
+}
+
+/* --- Empty state --- */
+.ts-no-results {
+  grid-column: 1 / -1; text-align: center;
+  padding: 5rem 2rem;
+  font-family: var(--font-display); font-size: 1.25rem;
+  font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--ts-muted);
+}
+
+.ts-no-results .ts-jp-empty {
+  display: block; font-family: var(--font-jp);
+  font-size: 0.7rem; color: var(--ts-chrome);
+  margin-top: 0.75rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  .ts-dossier-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .ts-catalog-controls {
+    flex-direction: column; align-items: stretch;
+  }
+  .ts-search-wrap { max-width: 100%; }
+  .ts-filters { justify-content: center; }
+  .ts-catalog-nav-count { display: none; }
+}
